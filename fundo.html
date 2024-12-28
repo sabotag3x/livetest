@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundo Escuro Estilizado</title>
+  <style>
+    /* Define a tela inteira */
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      position: relative;
+      overflow: hidden; /* Impede o overflow de elementos fora da tela */
+      background-color: #0a0a0a; /* Cor de fundo ainda mais escuro */
+    }
+
+    /* Container para o fundo */
+    #background-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Gradiente escuro animado para o fundo */
+    #background-gradient {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #000000, #0b0b0b, #121212);
+      background-size: 400% 400%;
+      animation: gradientAnimation 10s ease infinite;
+      z-index: -1;
+    }
+
+    /* Efeito de animação do gradiente */
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Formas geométricas (círculos) animadas em cores laranja */
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: moveCircle 20s infinite;
+    }
+
+    /* Efeito de movimento aleatório dos círculos */
+    @keyframes moveCircle {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 0.6;
+      }
+      25% {
+        transform: translate(calc(50% + 200px), calc(50% + 200px)) rotate(90deg);
+        opacity: 0.4;
+      }
+      50% {
+        transform: translate(calc(50% - 200px), calc(50% - 200px)) rotate(180deg);
+        opacity: 0.3;
+      }
+      75% {
+        transform: translate(calc(50% + 150px), calc(50% - 150px)) rotate(270deg);
+        opacity: 0.4;
+      }
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+        opacity: 0.6;
+      }
+    }
+
+    /* Círculos de diferentes tamanhos e posições */
+    .circle-1 {
+      width: 150px;
+      height: 150px;
+      top: 20%;
+      left: 10%;
+      background: rgba(255, 165, 0, 0.2); /* Laranja suave */
+      animation-duration: 25s; /* Duração mais longa */
+    }
+
+    .circle-2 {
+      width: 200px;
+      height: 200px;
+      top: 50%;
+      right: 20%;
+      background: rgba(255, 165, 0, 0.3); /* Laranja suave */
+      animation-duration: 30s; /* Duração mais longa */
+    }
+
+    .circle-3 {
+      width: 180px;
+      height: 180px;
+      bottom: 15%;
+      left: 40%;
+      background: rgba(255, 165, 0, 0.4); /* Laranja mais intenso */
+      animation-duration: 18s; /* Duração mais curta */
+    }
+
+    /* Novos círculos com animações distintas */
+    .circle-4 {
+      width: 120px;
+      height: 120px;
+      top: 10%;
+      left: 60%;
+      background: rgba(255, 165, 0, 0.5);
+      animation-duration: 20s;
+      animation-delay: 5s;
+    }
+
+    .circle-5 {
+      width: 100px;
+      height: 100px;
+      bottom: 30%;
+      right: 30%;
+      background: rgba(255, 165, 0, 0.6);
+      animation-duration: 35s;
+      animation-delay: 10s;
+    }
+
+    .circle-6 {
+      width: 250px;
+      height: 250px;
+      bottom: 10%;
+      left: 25%;
+      background: rgba(255, 165, 0, 0.3);
+      animation-duration: 40s;
+      animation-delay: 15s;
+    }
+
+    /* Outro fundo suavemente difuso para adicionar mais profundidade */
+    #background-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9); /* Camada escura e opaca */
+      z-index: -2;
+    }
+  </style>
+</head>
+<body>
+  <!-- Container do fundo com gradiente e círculos -->
+  <div id="background-container">
+    <div id="background-gradient"></div>
+    <div id="background-overlay"></div>
+    <!-- Círculos animados -->
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+    <div class="circle circle-4"></div>
+    <div class="circle circle-5"></div>
+    <div class="circle circle-6"></div>
+  </div>
+</body>
+</html>

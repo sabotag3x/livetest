@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Widget</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: #fff;
+      margin: 0px;
+      padding: 0px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    #video-wrapper {
+      width: 1280px;
+      height: 750px;
+      background-color: #ff9900;
+      border-radius: 16px;
+      padding: 7px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #video-container {
+      width: 100%;
+      height: 100%;
+      background-color: #333;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="video-wrapper">
+    <div id="video-container">
+      <iframe id="video-player" 
+              src="https://www.youtube.com/embed/KLXsUWKuQ0s?enablejsapi=1&autoplay=1&mute=0&modestbranding=1&showinfo=0&controls=0&rel=0&fs=0&iv_load_policy=3" 
+              allow="autoplay"></iframe>
+    </div>
+  </div>
+
+  <script>
+    let player;
+    const videoLinks = [
+      "KLXsUWKuQ0s", // Exemplo de vídeo 1
+      "xH7b8pn5uT4", // Exemplo de vídeo 2
+      "luCvGZRuoHg", // Exemplo de vídeo 3
+      "23Y8JOQQzzw"  // Exemplo de vídeo 4
+    ];
+    let videoIndex = 0;
+
+    // Função chamada automaticamente pela API do YouTube
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('video-player', {
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    // Muda o vídeo quando o atual termina
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        videoIndex = (videoIndex + 1) % videoLinks.length; // Cicla pelos vídeos
+        player.loadVideoById(videoLinks[videoIndex]); // Carrega próximo vídeo pelo ID
+      }
+    }
+
+    // Carrega a API do YouTube
+    const script = document.createElement('script');
+    script.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>

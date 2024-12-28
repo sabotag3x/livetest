@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSS Feed Widget</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: #fff;
+      margin: 0;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+    }
+    #container {
+      display: flex;
+      flex-direction: row;
+      background-color: #000;
+      border: 2px solid #ff9900;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      width: 1200px;
+      height: 250px;
+      border-bottom: 2px solid #ff9900;
+    }
+    #title-container {
+      background-color: #ff9900;
+      color: black;
+      padding: 0 20px;
+      border-radius: 8px 0 0 8px;
+      writing-mode: vertical-rl;
+      font-size: 2.2rem;
+      font-weight: bold;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: 50px;
+      transform: rotate(180deg);
+    }
+    #news-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 26px;
+      width: 100%;
+      height: 100%;
+      overflow-y: hidden;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .news-item {
+      padding: 10px;
+      border-radius: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      color: white;
+      width: 100%;
+      box-sizing: border-box;
+      word-wrap: break-word;
+    }
+    .news-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .news-item:hover {
+      transform: translateY(-5px);
+    }
+    .news-title {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 30px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+.news-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-left: 15px solid #ff9900; /* Triângulo apontando para a esquerda */
+}
+
+
+    .news-link {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .news-link:hover {
+      text-decoration: underline;
+      color: #ffcc00;
+    }
+    .empty-news {
+      background-color: #111;
+      padding: 10px;
+      border-radius: 8px;
+      min-height: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="title-container">Notícias</div>
+    <div id="news-container">Carregando notícias...</div>
+  </div>
+
+  <script>
+    const rssFeedUrl = "https://livecoins.com.br/feed/";
+    const maxNews = 9; // Máximo de 9 notícias
+    const displayGroupSize = 3; // Exibe 3 notícias por vez
+    const updateInterval = 10 * 1000; // Intervalo de troca de notícias (em milissegundos)
+    let currentIndex = 0;
+    let newsItems = [];
+
+    // Função para buscar as notícias do RSS
+    async function fetchRSSFeed() {
+      try {
+        const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssFeedUrl)}`);
+        if (!response.ok) throw new Error("Erro ao buscar o RSS");
+        const data = await response.json();
+        return data.items.slice(0, maxNews); // Retorna as 9 últimas notícias
+      } catch (error) {
+        console.error("Erro ao buscar o feed RSS:", error);
+        return [];
+      }
+    }
+
+    // Função para exibir as notícias
+    function displayNews() {
+      const newsContainer = document.getElementById("news-container");
+      newsContainer.innerHTML = ""; // Limpa o container
+
+      // Garante que o currentIndex não ultrapasse o número de notícias
+      const group = newsItems.slice(currentIndex, currentIndex + displayGroupSize);
+
+      // Exibe as notícias
+      group.forEach((news) => {
+        const div = document.createElement("div");
+        div.className = "news-item";
+
+        const title = document.createElement("div");
+        title.className = "news-title";
+        title.innerText = news.title;
+
+        const link = document.createElement("a");
+        link.className = "news-link";
+        link.href = news.link;
+        link.target = "_blank";
+
+        div.appendChild(title);
+        div.appendChild(link);
+        newsContainer.appendChild(div);
+
+        // Aplica a classe 'visible' com atraso para animação
+        setTimeout(() => div.classList.add('visible'), 50);
+      });
+
+      // Se não houver 3 notícias, adicionar quadrados extras vazios
+      while (group.length < displayGroupSize) {
+        const emptyDiv = document.createElement("div");
+        emptyDiv.className = "empty-news";
+        newsContainer.appendChild(emptyDiv);
+      }
+
+      // Atualiza o índice para o próximo grupo, garantindo que o índice seja cíclico
+      currentIndex = (currentIndex + displayGroupSize) % newsItems.length;
+    }
+
+    // Função para atualizar as notícias
+    async function updateNews() {
+      newsItems = await fetchRSSFeed();
+      if (newsItems.length === 0) {
+        const newsContainer = document.getElementById("news-container");
+        newsContainer.innerHTML = "<div>Erro ao carregar notícias. Tente novamente.</div>";
+      } else {
+        displayNews();
+      }
+    }
+
+    // Atualiza o feed RSS inicialmente e alterna a cada 10 segundos
+    updateNews();
+    setInterval(displayNews, updateInterval);
+  </script>
+</body>
+</html>
